@@ -177,6 +177,9 @@
             if (oldValue != '' && itiPhone.isValidNumber() === null) {
               itiPhone.setNumber(oldValue);
               phoneInput.value = itiPhone.getNumber();
+            } else {
+              itiPhone.setNumber('');
+              phoneInput.value = '';
             }
           }
           if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
