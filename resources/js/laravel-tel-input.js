@@ -215,6 +215,7 @@
     telInput.addEventListener('countrychange', countryChangeEventFunc);
     telInput.removeEventListener('change', telInputChangeEventFunc);
     telInput.addEventListener('change', telInputChangeEventFunc);
+    telInput.addEventListener('input', telInputChangeEventFunc);
 
     // listen and sync phone number with tel input if any
     if (telInput.dataset.phoneInput) {
