@@ -17,6 +17,10 @@
     data-phone-input-id="{{ $id }}"
     data-phone-input-name="{{ $name }}"
     data-phone-input="#{{ $id }}"
+    @if($attributes->has('phone-value'))
+        data-phone-input-phone-value="{{ $attributes->get('phone-value') }}"
+    @endif
+
     @if ($attributes->has('value'))
       value="{{ $attributes->get('value') }}"
     @endif

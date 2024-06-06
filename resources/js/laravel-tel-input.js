@@ -122,6 +122,7 @@
     // init the tel input
     const itiPhone = window.intlTelInput(telInput, options);
 
+    itiPhone.setNumber(telInput.dataset.phoneInputPhoneValue);
 
     // countrychange event function
     const countryChangeEventFunc = function () {
@@ -171,7 +172,7 @@
             if (itiPhone.isValidNumber()) {
               phoneInput.value = itiPhone.getNumber();
             } else {
-              phoneInput.value = '';
+              // phoneInput.value = '';
             }
           } else {
             if (oldValue != '' && itiPhone.isValidNumber() === null) {
@@ -253,6 +254,7 @@
 
     // After each intlTelInput instance has been created, fix issues with pre-filled values by dispatching change event on the country dropdown
     telInput.dispatchEvent(new KeyboardEvent('countrychange'));
+
     // Fix issues working on page with Turbolinks enabled
     document.addEventListener("turbolinks:load", function() {
       if (telInput) {

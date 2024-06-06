@@ -8,6 +8,7 @@ class LaravelTelInput extends Component
 {
     public $id;
     public $name;
+    public $country;
 
     /**
      * Create a new component instance.
@@ -16,8 +17,8 @@ class LaravelTelInput extends Component
      */
     public function __construct(string $id = null, string $name = 'phone')
     {
-        $this->id = $id;
-        $this->name = $name;
+        $this->id       = $id;
+        $this->name     = $name;
 
         if (!$this->name) {
             $this->name = 'phone-' . uniqid();
