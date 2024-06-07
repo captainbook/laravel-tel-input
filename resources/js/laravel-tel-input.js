@@ -122,7 +122,9 @@
     // init the tel input
     const itiPhone = window.intlTelInput(telInput, options);
 
-    itiPhone.setNumber(telInput.dataset.phoneInputPhoneValue);
+    if (telInput.dataset.phoneInputPhoneValue) {
+      itiPhone.setNumber(telInput.dataset.phoneInputPhoneValue);
+    }
 
     // countrychange event function
     const countryChangeEventFunc = function () {
