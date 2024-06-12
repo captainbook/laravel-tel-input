@@ -160,8 +160,7 @@
     }
 
     // countrychange event function
-    const telInputChangeEventFunc = function (e) {
-      console.log(e);
+    const telInputChangeEventFunc = function () {
       // phone input data
       if (this.dataset.phoneInput) {
         const phoneInput = document.querySelector(this.dataset.phoneInput);
@@ -222,6 +221,7 @@
     telInput.addEventListener('countrychange', countryChangeEventFunc);
     telInput.removeEventListener('change', telInputChangeEventFunc);
     telInput.addEventListener('change', telInputChangeEventFunc);
+    telInput.addEventListener('input', telInputChangeEventFunc);
 
     // listen and sync phone number with tel input if any
     if (telInput.dataset.phoneInput) {
