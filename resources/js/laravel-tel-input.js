@@ -159,7 +159,7 @@
       }
     }
 
-    // countrychange event function
+    // tel input change event function
     const telInputChangeEventFunc = function () {
       // phone input data
       if (this.dataset.phoneInput) {
@@ -187,6 +187,7 @@
           }
           if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
             phoneInput.dispatchEvent(new KeyboardEvent('change'));
+            phoneInput.dispatchEvent(new KeyboardEvent('input'));
             phoneInput.dispatchEvent(new CustomEvent('telchange', {
               detail: {
                 valid: true,
@@ -200,6 +201,7 @@
           } else {
             if (itiPhone.isValidNumber() === false) {
               phoneInput.dispatchEvent(new KeyboardEvent('change'));
+              phoneInput.dispatchEvent(new KeyboardEvent('input'));
               phoneInput.dispatchEvent(new CustomEvent('telchange', {
                 detail: {
                   valid: false,
@@ -230,13 +232,12 @@
         if (oldValue != '' && oldValue.charAt(0) != '+' && oldValue.charAt(0) != '0') {
           oldValue = `+${oldValue}`;
         }
-
         const changeHandler = function () {
           let newValue = this.value?.trim();
           if (newValue != oldValue && newValue != '') {
             itiPhone.setNumber(newValue);
           }
-        };
+        }
         phoneInput.removeEventListener('change', changeHandler);
         phoneInput.addEventListener('change', changeHandler);
       }
@@ -247,7 +248,7 @@
       if (phoneCountryInput) {
         const changeHandler = function () {
           itiPhone.setCountry(this.value?.trim());
-        };
+        }
         phoneCountryInput.removeEventListener('change', changeHandler);
         phoneCountryInput.addEventListener('change', changeHandler);
       }
@@ -289,19 +290,23 @@
 
   // Listen to the document events and re-render the tel inputs
   document.addEventListener("DOMContentLoaded", function() {
-    renderTelInput();
+    setTimeout(function () {
+      renderTelInput();
+    }, 5);
 
     // user dispatched browser events to re-render the tel inputs
     document.addEventListener("telDOMChanged", function() {
-      renderTelInput();
+      setTimeout(function () {
+        renderTelInput();
+      }, 5);
     });
 
     // Livewire event hook
     if (window.Livewire) {
-      window.Livewire.hook('element.initialized', (el, component) => {
-        if (el.classList.contains('iti--laravel-tel-input')) {
+      window.Livewire.hook('component.initialized', component => {
+        setTimeout(function () {
           renderTelInput();
-        }
+        }, 5);
       });
     }
   });
