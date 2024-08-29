@@ -51,7 +51,6 @@
   // init a tell input
   function initTelInput(telInput, options = {})
   {
-    alert('initTelInput');
     // tel input country cookie
     const IntlTelInputSelectedCountryCookie = `IntlTelInputSelectedCountry_${telInput.dataset.phoneInputId}`;
 
@@ -117,18 +116,16 @@
     // utilsScript option
     if (options.utilsScript) {
       // Fix utilsScript relative path bug
-      options.utilsScript = options.utilsScript.charAt(0) == '/' ? options.utilsScript : '/' + options.utilsScript;
+      options.utilsScript = options.utilsScript.charAt(0) === '/' ? options.utilsScript : '/' + options.utilsScript;
     }
 
     // init the tel input
     const itiPhone = window.intlTelInput(telInput, options);
 
-    if (telInput.dataset.phoneInputPhoneValue) {
-      itiPhone.setNumber(telInput.dataset.phoneInputPhoneValue);
-    }
 
     // countrychange event function
     const countryChangeEventFunc = function () {
+
       let countryData = itiPhone.getSelectedCountryData();
       if (countryData.iso2) {
         setCookie(IntlTelInputSelectedCountryCookie, countryData.iso2?.toUpperCase());
@@ -139,7 +136,7 @@
           if (phoneCountryInput) {
             let oldValue = phoneCountryInput.value?.trim();
             phoneCountryInput.value = countryData.iso2?.toUpperCase();
-            if (phoneCountryInput.value !== oldValue || phoneCountryInput.value != '') {
+            if (phoneCountryInput.value !== oldValue || phoneCountryInput.value !== '') {
               phoneCountryInput.dispatchEvent(new KeyboardEvent('change'));
             }
           }
@@ -150,7 +147,7 @@
           if (phoneDialCodeInput) {
             let oldValue = phoneDialCodeInput.value;
             phoneDialCodeInput.value = countryData.dialCode;
-            if (phoneDialCodeInput.value !== oldValue || phoneDialCodeInput.value != '') {
+            if (phoneDialCodeInput.value !== oldValue || phoneDialCodeInput.value !== '') {
               phoneDialCodeInput.dispatchEvent(new KeyboardEvent('change'));
             }
           }
@@ -162,32 +159,28 @@
 
     // tel input change event function
     const telInputChangeEventFunc = function () {
-      alert('telInputChangeEventFunc')
       // phone input data
       if (this.dataset.phoneInput) {
         const phoneInput = document.querySelector(this.dataset.phoneInput);
         if (phoneInput) {
           let oldValue = phoneInput.value?.trim();
-          if (oldValue != '' && oldValue.charAt(0) != '+'  && oldValue.charAt(0) != '0' && itiPhone.isValidNumber() === null) {
+          if (oldValue !== '' && oldValue.charAt(0) !== '+'  && oldValue.charAt(0) !== '0' && itiPhone.isValidNumber() === null) {
             oldValue = `+${oldValue}`;
             phoneInput.value = oldValue;
           }
-          if (itiPhone.getNumber()?.trim() != '') {
+          if (itiPhone.getNumber()?.trim() !== '') {
             if (itiPhone.isValidNumber()) {
               phoneInput.value = itiPhone.getNumber();
             } else {
-              // phoneInput.value = '';
-            }
-          } else {
-            if (oldValue != '' && itiPhone.isValidNumber() === null) {
-              itiPhone.setNumber(oldValue);
-              phoneInput.value = itiPhone.getNumber();
-            } else {
-              itiPhone.setNumber('');
               phoneInput.value = '';
             }
+          } else {
+            if (oldValue !== '' && itiPhone.isValidNumber() === null) {
+              itiPhone.setNumber(oldValue);
+              phoneInput.value = itiPhone.getNumber();
+            }
           }
-          if (phoneInput.value !== oldValue && phoneInput.value !== '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
+          if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
             phoneInput.dispatchEvent(new KeyboardEvent('change'));
             phoneInput.dispatchEvent(new KeyboardEvent('input'));
             phoneInput.dispatchEvent(new CustomEvent('telchange', {
@@ -231,12 +224,12 @@
       const phoneInput = document.querySelector(telInput.dataset.phoneInput);
       if (phoneInput) {
         let oldValue = phoneInput.value?.trim();
-        if (oldValue != '' && oldValue.charAt(0) != '+' && oldValue.charAt(0) != '0') {
+        if (oldValue !== '' && oldValue.charAt(0) !== '+' && oldValue.charAt(0) !== '0') {
           oldValue = `+${oldValue}`;
         }
         const changeHandler = function () {
           let newValue = this.value?.trim();
-          if (newValue != oldValue && newValue != '') {
+          if (newValue !== oldValue && newValue !== '') {
             itiPhone.setNumber(newValue);
           }
         }
@@ -258,7 +251,6 @@
 
     // After each intlTelInput instance has been created, fix issues with pre-filled values by dispatching change event on the country dropdown
     telInput.dispatchEvent(new KeyboardEvent('countrychange'));
-
     // Fix issues working on page with Turbolinks enabled
     document.addEventListener("turbolinks:load", function() {
       if (telInput) {
@@ -291,8 +283,7 @@
   }
 
   // Listen to the document events and re-render the tel inputs
-  document.addEventListener("livewire:init", function() {
-    alert('livewire init')
+  document.addEventListener("DOMContentLoaded", function() {
     setTimeout(function () {
       renderTelInput();
     }, 5);
@@ -306,19 +297,11 @@
 
     // Livewire event hook
     if (window.Livewire) {
-      window.Livewire.hook('component.init', component => {
-        alert('component init');
-        setTimeout(function () {
-          renderTelInput();
-        }, 5);
-      });
       window.Livewire.hook('component.initialized', component => {
-        alert('component initialized');
         setTimeout(function () {
           renderTelInput();
         }, 5);
       });
     }
   });
-  //
 })();
