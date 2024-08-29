@@ -49,8 +49,7 @@
   }
 
   // init a tell input
-  function initTelInput(telInput, options = {})
-  {
+  function initTelInput(telInput, options = {}) {
     // tel input country cookie
     const IntlTelInputSelectedCountryCookie = `IntlTelInputSelectedCountry_${telInput.dataset.phoneInputId}`;
 
@@ -195,9 +194,23 @@
                 number: itiPhone.getNumber(),
                 country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
                 countryName: itiPhone.getSelectedCountryData().name,
-                dialCode: itiPhone.getSelectedCountryData().dialCode
+                dialCode: itiPhone.getSelectedCountryData().dialCode,
+                phoneInputId: this.dataset.phoneInput
               }
             }));
+            if (window.Livewire) {
+              Livewire.dispatch('telchange', {
+                  detail: {
+                    valid: true,
+                    validNumber: phoneInput.value,
+                    number: itiPhone.getNumber(),
+                    country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
+                    countryName: itiPhone.getSelectedCountryData().name,
+                    dialCode: itiPhone.getSelectedCountryData().dialCode,
+                    phoneInputId: this.dataset.phoneInput.replace('#','')
+                  }
+              });
+            }
           } else {
             if (itiPhone.isValidNumber() === false) {
               phoneInput.dispatchEvent(new KeyboardEvent('change'));
@@ -212,6 +225,19 @@
                   dialCode: itiPhone.getSelectedCountryData().dialCode
                 }
               }));
+              if (window.Livewire) {
+                Livewire.dispatch('telchange', {
+                  detail: {
+                    valid: false,
+                    validNumber: phoneInput.value,
+                    number: itiPhone.getNumber(),
+                    country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
+                    countryName: itiPhone.getSelectedCountryData().name,
+                    dialCode: itiPhone.getSelectedCountryData().dialCode,
+                    phoneInputId: this.dataset.phoneInput.replace('#','')
+                  }
+                });
+              }
             }
           }
         }
@@ -271,8 +297,7 @@
     });
   }
 
-  function renderTelInput()
-  {
+  function renderTelInput() {
     if (typeof window.intlTelInput !== 'function') {
       throw new TypeError(
           'Laravel-Tel-Input: requires International Telephone Input (https://github.com/jackocnr/intl-tel-input). Please install with NPM or include the CDN.'
