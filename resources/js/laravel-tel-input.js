@@ -51,6 +51,7 @@
   // init a tell input
   function initTelInput(telInput, options = {})
   {
+    alert('initTelInput');
     // tel input country cookie
     const IntlTelInputSelectedCountryCookie = `IntlTelInputSelectedCountry_${telInput.dataset.phoneInputId}`;
 
@@ -161,6 +162,7 @@
 
     // tel input change event function
     const telInputChangeEventFunc = function () {
+      alert('telInputChangeEventFunc')
       // phone input data
       if (this.dataset.phoneInput) {
         const phoneInput = document.querySelector(this.dataset.phoneInput);
@@ -185,7 +187,7 @@
               phoneInput.value = '';
             }
           }
-          if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
+          if (phoneInput.value !== oldValue && phoneInput.value !== '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
             phoneInput.dispatchEvent(new KeyboardEvent('change'));
             phoneInput.dispatchEvent(new KeyboardEvent('input'));
             phoneInput.dispatchEvent(new CustomEvent('telchange', {
@@ -289,7 +291,8 @@
   }
 
   // Listen to the document events and re-render the tel inputs
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("livewire:init", function() {
+    alert('livewire init')
     setTimeout(function () {
       renderTelInput();
     }, 5);
@@ -303,7 +306,14 @@
 
     // Livewire event hook
     if (window.Livewire) {
+      window.Livewire.hook('component.init', component => {
+        alert('component init');
+        setTimeout(function () {
+          renderTelInput();
+        }, 5);
+      });
       window.Livewire.hook('component.initialized', component => {
+        alert('component initialized');
         setTimeout(function () {
           renderTelInput();
         }, 5);
