@@ -41,11 +41,11 @@
     for (var i = 0; i < ca.length; i++) {
       var c = ca[i];
 
-      while (c.charAt(0) == ' ') {
+      while (c.charAt(0) === ' ') {
         c = c.substring(1);
       }
 
-      if (c.indexOf(name) == 0) {
+      if (c.indexOf(name) === 0) {
         return c.substring(name.length, c.length);
       }
     }
@@ -142,11 +142,16 @@
 
     if (options.utilsScript) {
       // Fix utilsScript relative path bug
-      options.utilsScript = options.utilsScript.charAt(0) === '/' ? options.utilsScript : '/' + options.utilsScript;
+      options.utilsScript = options.utilsScript.charAt(0) == '/' ? options.utilsScript : '/' + options.utilsScript;
     } // init the tel input
 
 
-    var itiPhone = window.intlTelInput(telInput, options); // countrychange event function
+    var itiPhone = window.intlTelInput(telInput, options);
+
+    if (telInput.dataset.phoneInputPhoneValue) {
+      itiPhone.setNumber(telInput.dataset.phoneInputPhoneValue);
+    } // countrychange event function
+
 
     var countryChangeEventFunc = function countryChangeEventFunc() {
       var countryData = itiPhone.getSelectedCountryData();
@@ -209,17 +214,19 @@
           if (((_itiPhone$getNumber = itiPhone.getNumber()) === null || _itiPhone$getNumber === void 0 ? void 0 : _itiPhone$getNumber.trim()) !== '') {
             if (itiPhone.isValidNumber()) {
               phoneInput.value = itiPhone.getNumber();
-            } else {
-              phoneInput.value = '';
+            } else {// phoneInput.value = '';
             }
           } else {
             if (oldValue !== '' && itiPhone.isValidNumber() === null) {
               itiPhone.setNumber(oldValue);
               phoneInput.value = itiPhone.getNumber();
+            } else {
+              itiPhone.setNumber('');
+              phoneInput.value = '';
             }
           }
 
-          if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
+          if (phoneInput.value !== oldValue && phoneInput.value !== '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
             var _itiPhone$getSelected;
 
             phoneInput.dispatchEvent(new KeyboardEvent('change'));
@@ -390,7 +397,7 @@
         }, 5);
       });
     }
-  });
+  }); //
 })();
 
 /***/ }),
