@@ -24,10 +24,10 @@
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
       let c = ca[i];
-      while (c.charAt(0) == ' ') {
+      while (c.charAt(0) === ' ') {
         c = c.substring(1);
       }
-      if (c.indexOf(name) == 0) {
+      if (c.indexOf(name) === 0) {
         return c.substring(name.length, c.length);
       }
     }
@@ -49,8 +49,7 @@
   }
 
   // init a tell input
-  function initTelInput(telInput, options = {})
-  {
+  function initTelInput(telInput, options = {}) {
     // tel input country cookie
     const IntlTelInputSelectedCountryCookie = `IntlTelInputSelectedCountry_${telInput.dataset.phoneInputId}`;
 
@@ -138,7 +137,7 @@
           if (phoneCountryInput) {
             let oldValue = phoneCountryInput.value?.trim();
             phoneCountryInput.value = countryData.iso2?.toUpperCase();
-            if (phoneCountryInput.value !== oldValue || phoneCountryInput.value != '') {
+            if (phoneCountryInput.value !== oldValue || phoneCountryInput.value !== '') {
               phoneCountryInput.dispatchEvent(new KeyboardEvent('change'));
             }
           }
@@ -149,7 +148,7 @@
           if (phoneDialCodeInput) {
             let oldValue = phoneDialCodeInput.value;
             phoneDialCodeInput.value = countryData.dialCode;
-            if (phoneDialCodeInput.value !== oldValue || phoneDialCodeInput.value != '') {
+            if (phoneDialCodeInput.value !== oldValue || phoneDialCodeInput.value !== '') {
               phoneDialCodeInput.dispatchEvent(new KeyboardEvent('change'));
             }
           }
@@ -159,25 +158,25 @@
       }
     }
 
-    // countrychange event function
+    // tel input change event function
     const telInputChangeEventFunc = function () {
       // phone input data
       if (this.dataset.phoneInput) {
         const phoneInput = document.querySelector(this.dataset.phoneInput);
         if (phoneInput) {
           let oldValue = phoneInput.value?.trim();
-          if (oldValue != '' && oldValue.charAt(0) != '+'  && oldValue.charAt(0) != '0' && itiPhone.isValidNumber() === null) {
+          if (oldValue !== '' && oldValue.charAt(0) !== '+'  && oldValue.charAt(0) !== '0' && itiPhone.isValidNumber() === null) {
             oldValue = `+${oldValue}`;
             phoneInput.value = oldValue;
           }
-          if (itiPhone.getNumber()?.trim() != '') {
+          if (itiPhone.getNumber()?.trim() !== '') {
             if (itiPhone.isValidNumber()) {
               phoneInput.value = itiPhone.getNumber();
             } else {
               // phoneInput.value = '';
             }
           } else {
-            if (oldValue != '' && itiPhone.isValidNumber() === null) {
+            if (oldValue !== '' && itiPhone.isValidNumber() === null) {
               itiPhone.setNumber(oldValue);
               phoneInput.value = itiPhone.getNumber();
             } else {
@@ -185,8 +184,9 @@
               phoneInput.value = '';
             }
           }
-          if (phoneInput.value !== oldValue && phoneInput.value != '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
+          if (phoneInput.value !== oldValue && phoneInput.value !== '' && (itiPhone.isValidNumber() === true || itiPhone.isValidNumber() === null)) {
             phoneInput.dispatchEvent(new KeyboardEvent('change'));
+            phoneInput.dispatchEvent(new KeyboardEvent('input'));
             phoneInput.dispatchEvent(new CustomEvent('telchange', {
               detail: {
                 valid: true,
@@ -194,12 +194,27 @@
                 number: itiPhone.getNumber(),
                 country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
                 countryName: itiPhone.getSelectedCountryData().name,
-                dialCode: itiPhone.getSelectedCountryData().dialCode
+                dialCode: itiPhone.getSelectedCountryData().dialCode,
+                phoneInputId: this.dataset.phoneInput
               }
             }));
+            if (window.Livewire) {
+              Livewire.dispatch('telchange', {
+                  detail: {
+                    valid: true,
+                    validNumber: phoneInput.value,
+                    number: itiPhone.getNumber(),
+                    country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
+                    countryName: itiPhone.getSelectedCountryData().name,
+                    dialCode: itiPhone.getSelectedCountryData().dialCode,
+                    phoneInputId: this.dataset.phoneInput.replace('#','')
+                  }
+              });
+            }
           } else {
             if (itiPhone.isValidNumber() === false) {
               phoneInput.dispatchEvent(new KeyboardEvent('change'));
+              phoneInput.dispatchEvent(new KeyboardEvent('input'));
               phoneInput.dispatchEvent(new CustomEvent('telchange', {
                 detail: {
                   valid: false,
@@ -210,6 +225,19 @@
                   dialCode: itiPhone.getSelectedCountryData().dialCode
                 }
               }));
+              if (window.Livewire) {
+                Livewire.dispatch('telchange', {
+                  detail: {
+                    valid: false,
+                    validNumber: phoneInput.value,
+                    number: itiPhone.getNumber(),
+                    country: itiPhone.getSelectedCountryData().iso2?.toUpperCase(),
+                    countryName: itiPhone.getSelectedCountryData().name,
+                    dialCode: itiPhone.getSelectedCountryData().dialCode,
+                    phoneInputId: this.dataset.phoneInput.replace('#','')
+                  }
+                });
+              }
             }
           }
         }
@@ -227,16 +255,15 @@
       const phoneInput = document.querySelector(telInput.dataset.phoneInput);
       if (phoneInput) {
         let oldValue = phoneInput.value?.trim();
-        if (oldValue != '' && oldValue.charAt(0) != '+' && oldValue.charAt(0) != '0') {
+        if (oldValue !== '' && oldValue.charAt(0) !== '+' && oldValue.charAt(0) !== '0') {
           oldValue = `+${oldValue}`;
         }
-
         const changeHandler = function () {
           let newValue = this.value?.trim();
-          if (newValue != oldValue && newValue != '') {
+          if (newValue !== oldValue && newValue !== '') {
             itiPhone.setNumber(newValue);
           }
-        };
+        }
         phoneInput.removeEventListener('change', changeHandler);
         phoneInput.addEventListener('change', changeHandler);
       }
@@ -247,7 +274,7 @@
       if (phoneCountryInput) {
         const changeHandler = function () {
           itiPhone.setCountry(this.value?.trim());
-        };
+        }
         phoneCountryInput.removeEventListener('change', changeHandler);
         phoneCountryInput.addEventListener('change', changeHandler);
       }
@@ -270,8 +297,7 @@
     });
   }
 
-  function renderTelInput()
-  {
+  function renderTelInput() {
     if (typeof window.intlTelInput !== 'function') {
       throw new TypeError(
           'Laravel-Tel-Input: requires International Telephone Input (https://github.com/jackocnr/intl-tel-input). Please install with NPM or include the CDN.'
@@ -289,19 +315,23 @@
 
   // Listen to the document events and re-render the tel inputs
   document.addEventListener("DOMContentLoaded", function() {
-    renderTelInput();
+    setTimeout(function () {
+      renderTelInput();
+    }, 5);
 
     // user dispatched browser events to re-render the tel inputs
     document.addEventListener("telDOMChanged", function() {
-      renderTelInput();
+      setTimeout(function () {
+        renderTelInput();
+      }, 5);
     });
 
     // Livewire event hook
     if (window.Livewire) {
-      window.Livewire.hook('element.initialized', (el, component) => {
-        if (el.classList.contains('iti--laravel-tel-input')) {
+      window.Livewire.hook('component.initialized', component => {
+        setTimeout(function () {
           renderTelInput();
-        }
+        }, 5);
       });
     }
   });
